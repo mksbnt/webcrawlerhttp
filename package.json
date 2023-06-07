@@ -1,0 +1,26 @@
+{
+  "name": "crawler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mksbnt/webcrawlerhttp.git"
+  },
+  "keywords": [
+    "node.js"
+  ],
+  "author": "mksbnt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/mksbnt/webcrawlerhttp/issues"
+  },
+  "homepage": "https://github.com/mksbnt/webcrawlerhttp#readme",
+  "devDependencies": {
+    "jest": "^29.5.0"
+  }
+}
