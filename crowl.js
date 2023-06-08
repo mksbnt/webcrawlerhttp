@@ -1,11 +1,36 @@
 const {JSDOM} = require('jsdom');
 const fetch = require('isomorphic-fetch');
+const {HttpsProxyAgent} = require('https-proxy-agent');
+
+const proxyAPI = 'https://www.proxyscan.io/api/proxy?type=http&level=transparent'; // todo: can be a list
 
 async function crawlPage(currentURL) {
     console.log(`Crawling ${currentURL}`);
 
     try {
-        const resp = await fetch(currentURL);
+        const response = await fetch(proxyAPI);
+        const proxy = await response.json();
+
+        console.log(proxy);
+
+        if (!proxy) {
+            console.log('No proxies available');
+            return;
+        }
+
+        const proxyIp = proxy[0].Ip;
+        const proxyPort = proxy[0].Port;
+        const proxyType = String(proxy[0].Type[0]).toLowerCase();
+
+        console.log(proxy);
+
+        const proxyURL = `${proxyType}://${proxyIp}:${proxyPort}`;
+
+        console.log(proxyURL);
+
+        const agent = new HttpsProxyAgent(proxyURL);
+        const resp = await fetch(currentURL, {agent});
+
 
         if (resp.status > 399) {
             console.log(`Error in fetch with status code: ${resp.status}, on page: ${currentURL}`);
@@ -13,16 +38,17 @@ async function crawlPage(currentURL) {
         }
 
         const contentType = resp.headers.get("content-type");
-        if (!contentType.includes('text/html' )) {
+
+        if (!contentType.includes('text/html')) {
             console.log(`Non HTML response: ${contentType}, on page: ${currentURL}`);
             return;
         }
 
         console.log(await resp.text());
     } catch (e) {
-        console.log(`Error in fetch: ${e.message}, on page: ${currentURL}`)
+        console.log(`Error in fetch: ${e.message}, on page: ${currentURL}`);
+        await crawlPage(currentURL);
     }
-
 }
 
 function getURLsFromHTML(htmlBody, baseURL) {
