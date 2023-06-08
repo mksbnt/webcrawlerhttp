@@ -1,4 +1,4 @@
-const {normalizeURL, getURLsFromHTML} = require('./crowl');
+const {normalizeURL, getURLsFromHTML} = require('./crowl.core');
 const {test, expect} = require('@jest/globals');
 
 test('normalizeURL strip protocol', () => {
